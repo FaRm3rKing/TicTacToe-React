@@ -1,6 +1,7 @@
 import React from 'react'
 import Search from './components//Search'
 import { useEffect, useState } from 'react'
+import Tictactoe from './components/Tictactoe'
 
 // const API_URL = "http://www.omdbapi.com/?apikey=eebfc798&"
 // const App = () => {
@@ -38,7 +39,9 @@ const App = () => {
 
     return (
         <>
-            <input type="text" value={username} onChange={
+
+            <Tictactoe />
+            {/* <input type="text" value={username} onChange={
                 (e) => {
                     setUsername(e.target.value)
                 }
@@ -52,7 +55,7 @@ const App = () => {
             <button onClick = {() => {
                 console.log(username)
                 console.log(password)
-            }}>Click me</button>
+            }}>Click me</button> */}
         </>
 
     )
