@@ -19,7 +19,7 @@ function Board({move, xToMove, onMove}){
         onMove(newMove)
     }
     return (
-    <div style={{display: "flex", flexDirection: "column"}}>
+    <div style={{display: "flex", flexDirection: "column", width:"90px", height:"90px"}}>
         <div style={{display: "flex", flexDirection: "row", justifyContent:"center", alignItems:"center"}}>
             <div style={{height: "30px", width: "30px", textAlign: "center", lineHeight: "30px", border:"1px solid black"}}
             onClick={() => handleSquareClick(0)}
@@ -122,15 +122,18 @@ function Tictactoe() {
                     `Winner ${!xToMove ? 'X': 'O'}`
                     :
                     `Next to play: ${xToMove? "X": "O"}`
-                    }</div> 
-                <Board xToMove={xToMove} move={currentMove} onMove={onMove}/>
+                    }
+                </div> 
+
+                <div>
+                    <Board xToMove={xToMove} move={currentMove} onMove={onMove}/>
+                </div>
             </div>
-            <ol>
-                {travelHistory}
-            </ol>
-            {/* <div style={{display: "flex", flexDirection: "column"}}>
-                {history}
-            </div> */}
+            <div>
+                <ol>
+                    {travelHistory}
+                </ol>
+            </div>
         </div>
 
     )
