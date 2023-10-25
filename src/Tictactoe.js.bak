@@ -1,0 +1,150 @@
+import React from 'react'
+import { useState, useCallback } from 'react'
+
+function Player({currentPlayer}){
+
+    return (
+        <span>Next player: {currentPlayer}</span>
+    )
+
+}
+function  GameHistory({move, onMoveChange, boardState, onBoardStateChange}){
+    const [boardHistory, setBoardHistory] = useState(boardState)
+    // const handleMoveChange = () => {
+    //     onMoveChange((move + 1)%2)
+    // }
+    let buttonText = `Go to game start`
+
+    if (move > 0) {
+        buttonText =`Go to move #${move}`
+
+    }
+
+    const handleHistoryChange = useCallback(()=>{
+        if (move === 0) {
+            return
+        }
+        onBoardStateChange(
+            boardState.slice(0, -1)
+        )
+        onMoveChange(move - 1)
+    }, [boardState, onBoardStateChange])
+
+    return (
+        <>
+            <span>{move + 1}</span>
+            <button onClick={handleHistoryChange}>{buttonText}</button>
+        </>
+    )
+
+}
+function Board({player, onPlayerMove, boardState, onBoardStateChange, move, onMoveChange}){
+    const handlePlayerMove = useCallback((e) =>{
+        const players = ['X', 'O']
+        const value = parseInt(e.target.getAttribute('data-value'))
+        // when div is clicked assign the piece to it
+        if (boardState[move].state[value].piece !== "") {
+            return
+        }
+        
+        onMoveChange(move + 1)
+
+      
+        const newBoardState = [
+            ...boardState,
+            {
+                id: move+1,
+                state: boardState[move].state.map( cell => {
+                    if (cell.id === value) {
+                        return {...cell, piece: players[(move+1) % 2]}
+                    }
+                    else {
+                        return {...cell}
+                    }
+                })
+            }
+        ]
+        onBoardStateChange(newBoardState)
+        
+        // then start the turn of the next player
+    },[boardState, onBoardStateChange, move, onMoveChange])
+
+    const squares = []
+    const numRows = 3
+    const numCols = 3
+    for (let i = 0; i < numRows; i++){
+        const cls = `row-${i}`
+        const cols = []
+        for (let j = 0; j < numCols; j++) {
+            const dataValue = i*3 + j
+            cols.push(
+                <div style={{height: "30px", width: "30px", border:"1px solid black"}} onClick={handlePlayerMove} data-value={`${dataValue}`}>
+                    {boardState[move].state[parseInt(dataValue)].piece}
+                </div>
+
+            )
+
+        }
+        squares.push(
+            <div className={ `${cls}` } style={{display:"flex", flexDirection: "row"}} >
+                {cols}
+            </div>
+        )
+    }
+
+    return (
+        <>
+        {squares}
+        </>
+    )
+}
+
+function Tictactoe(){
+    // we can use loop to initialize but hardcoded it so we can visualize it better
+    const boardArray = [{ id: 0, state:[
+        {id: 0, piece: ""},
+        {id: 1, piece: ""},
+        {id: 2, piece: ""},
+        {id: 3, piece: ""},
+        {id: 4, piece: ""},
+        {id: 5, piece: ""},
+        {id: 6, piece: ""},
+        {id: 7, piece: ""},
+        {id: 8, piece: ""},
+    ] } ]
+    // states
+    const players = ['X', 'O']
+    // const [ player, setPlayer ] = useState(0) // we can just use move instead but for now leave this  here
+    const [ boardState, setBoardState ] = useState(boardArray)
+    const [ move , setMove ] = useState(0)
+
+
+
+    const boardData = {
+        "boardState": boardState,
+        "onBoardStateChange": setBoardState,
+        "move": move,
+        "onMoveChange": setMove,
+    }
+
+
+    const history = []
+    history.push(
+        <div>
+            <GameHistory {...boardData}/>
+        </div>
+    )
+
+    return (
+        <>
+            <div>
+                <Player currentPlayer={players[(move+1) % 2]}/>
+                <Board {...boardData}/>
+            </div>
+            {history}
+        </>
+        
+    )
+}
+
+export default Tictactoe
