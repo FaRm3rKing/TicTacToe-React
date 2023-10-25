@@ -1,141 +1,74 @@
 import { useEffect, useState, useCallback } from "react";
 
-function Board({move, setMove, player, setPlayer, history, setHistory, historySlice, setHistorySlice, winner, setWinner}){
-    const pieces = ['X', 'O']
+function Board({move, xToMove, onMove}){
+    function handleSquareClick(i){
+        console.log(move)
+        const newMove = move.slice() // copy move array to newMove
 
-    const checkWinner = (mv) => {
-        let match = false
-        // check rows for matches
-        for (let i=0; i < 7; i+=3){
-            if (mv[i].piece !== mv[i+1].piece || mv[i+1].piece === ""){
-                continue
-            }
-            if (mv[i+1].piece !== mv[i+2].piece){
-                continue
-            }
-            match = true
-            // setHistorySlice(player - 1) // because player increments for every click it will treat the next player as winner so we decrement it
+        // if there is a piece in the square we don't do anything
+        // or if there is a winner already
+        if (move[i] || checkWinner(move)){
+            return 
         }
-        // check columsn for matches
-        for (let i=0; i < 3; i++){
-            if (mv[i].piece !== mv[i+3].piece || mv[i+3].piece === ""){
-                continue
-            }
-            if (mv[i+3].piece !== mv[i+6].piece){
-                continue
-            }
-            match = true
-            // setHistorySlice(player - 1)
+        // if there is no piece in that square create a new move
+        else {
+            newMove[i] = xToMove ? 'X' : 'O'
         }
 
-        // check for diagonals 
-        if (mv[4].piece !== ""){
-            if (mv[0].piece === mv[4].piece && mv[4].piece === mv[8].piece){
-                match = true
-                // setHistorySlice(player - 1)
-            } else if (mv[2].piece === mv[4].piece && mv[4].piece === mv[6].piece) {
-                match = true
-                // setHistorySlice(player - 1)
-            }
-        }
-
-        return match
+        // then save it to history
+        onMove(newMove)
     }
-    const handleCellClick = useCallback((e) => {
-        if (winner) {
-            return
-        }
-
-        const index = parseInt(e.target.getAttribute('data-value'))
-
-        if (move[index].piece !== ""){
-            return
-        }
-        const newMove = move.map(item => {
-            if (item.id === index){
-                return {...item, piece: pieces[historySlice%2]}
-            }
-            else {
-                return {...item}
-            }
-        })
-        setMove(newMove)
-        /// if a winner is found no need to continue?
-        const match = checkWinner(newMove)
-        if (match) {
-            setWinner(match)
-        }
-
-        if (historySlice !== player) {
-            setPlayer(historySlice+1)
-            setHistorySlice(historySlice+1)
-            setHistory(history.slice(0, historySlice+1))
-            return
-        }
-        setPlayer(player+ 1)
-        setHistorySlice(player+ 1)
-        setHistory(history, player + 1)
-    }, [move, setMove, player, setPlayer, history, setHistory, historySlice, setHistorySlice])
     return (
     <div style={{display: "flex", flexDirection: "column"}}>
         <div style={{display: "flex", flexDirection: "row", justifyContent:"center", alignItems:"center"}}>
             <div style={{height: "30px", width: "30px", textAlign: "center", lineHeight: "30px", border:"1px solid black"}}
-            onClick={handleCellClick}
-            data-value={"0"}
+            onClick={() => handleSquareClick(0)}
             >
-                {move[0].piece}
+                {move[0]}
             </div>
             <div style={{height: "30px", width: "30px", textAlign: "center", lineHeight: "30px", border:"1px solid black"}}
-            onClick={handleCellClick}
-            data-value={1}
+            onClick={() => handleSquareClick(1)}
             >
-                {move[1].piece}
+                {move[1]}
             </div>
             <div style={{height: "30px", width: "30px", textAlign: "center", lineHeight: "30px", border:"1px solid black"}}
-            onClick={handleCellClick}
-            data-value={2}
+            onClick={() => handleSquareClick(2)}
             >
-                {move[2].piece}
+                {move[2]}
             </div>
         </div>
         <div style={{display: "flex", flexDirection: "row"}}>
             <div style={{height: "30px", width: "30px", textAlign: "center", lineHeight: "30px", border:"1px solid black"}}
-            onClick={handleCellClick}
-            data-value={3}
+            onClick={() => handleSquareClick(3)}
             >
-                {move[3].piece}
+                {move[3]}
             </div>
             <div style={{height: "30px", width: "30px", textAlign: "center", lineHeight: "30px", border:"1px solid black"}}
-            onClick={handleCellClick}
-            data-value={4}
+            onClick={() => handleSquareClick(4)}
             >
-                {move[4].piece}
+                {move[4]}
             </div>
             <div style={{height: "30px", width: "30px", textAlign: "center", lineHeight: "30px", border:"1px solid black"}}
-            onClick={handleCellClick}
-            data-value={5}
+            onClick={() => handleSquareClick(5)}
             >
-                {move[5].piece}
+                {move[5]}
             </div>
         </div>
         <div style={{display: "flex", flexDirection: "row"}}>
             <div style={{height: "30px", width: "30px", textAlign: "center", lineHeight: "30px", border:"1px solid black"}}
-            onClick={handleCellClick}
-            data-value={6}
+            onClick={() => handleSquareClick(6)}
             >
-                {move[6].piece}
+                {move[6]}
             </div>
             <div style={{height: "30px", width: "30px",  textAlign: "center", lineHeight: "30px", border:"1px solid black"}}
-            onClick={handleCellClick}
-            data-value={7}
+            onClick={() => handleSquareClick(7)}
             >
-                {move[7].piece}
+                {move[7]}
             </div>
             <div style={{height: "30px", width: "30px", textAlign: "center", lineHeight: "30px", border:"1px solid black"}}
-            onClick={handleCellClick}
-            data-value={8}
+            onClick={() => handleSquareClick(8)}
             >
-                {move[8].piece}
+                {move[8]}
             </div>
         </div>
     </div>
@@ -144,88 +77,60 @@ function Board({move, setMove, player, setPlayer, history, setHistory, historySl
 }
 
 
-function History({move, setMove, player, setPlayer, historySlice, setHistorySlice, winner, setWinner}){
-    if (winner) {
-
-    }
-    const [boardState, setBoardState] = useState(move)
-    const [boardPlayer, setBoardPlayer] = useState(player)
-    const [isWinner, setIsWinner] = useState(winner)
-    let historyMessage = `Go to game start`
-    if (player > 0){
-        historyMessage = `Go to move #${player}`
-    } 
-    
-    function handleStateChange() {
-        setMove(boardState)
-        setHistorySlice(boardPlayer)
-        setWinner(isWinner)
-    }
-
-    return (
-        <div>
-            <span>{player+1} </span>
-            <button onClick={handleStateChange}>{historyMessage}</button>
-        </div>
-    )
-}
-
 
 function Tictactoe() {
-    const grid = [
-        {id:0, piece: ""},
-        {id:1, piece: ""},
-        {id:2, piece: ""},
-        {id:3, piece: ""},
-        {id:4, piece: ""},
-        {id:5, piece: ""},
-        {id:6, piece: ""},
-        {id:7, piece: ""},
-        {id:8, piece: ""},
-    ]
-    const pieces = ['X', 'O']
-    const [winner, setWinner] = useState(false)
-    const [player, setPlayer] = useState(0) // same as player
-    const [move, setMove] = useState(grid)
-    const [history, setHistory] = useState([])
-    const [historySlice, setHistorySlice] = useState(0) // same as player
+    const grid = Array(9).fill(null)
+    const [player, setPlayer] = useState(0) // move counter
+    const [history, setHistory] = useState([grid]) // history of moves | list of grids
+    let currentMove = history[player]
 
-    const boardData = {
-        "move": move,
-        "setMove": setMove,
-        "player": player,
-        "setPlayer": setPlayer,
-        "history": history,
-        "setHistory": setHistory,
-        "historySlice": historySlice,
-        "setHistorySlice": setHistorySlice,
-        "winner": winner,
-        "setWinner": setWinner
-    }
-    
-    useEffect(() => {
-        // if (!winner) {
-            setHistory(history.concat(<History key={history.length} {...boardData}/>))
-        // }
-        // else {
-        //     boardData.player = player - 1
-        //     setHistory(history.concat(<History key={history.length} {...boardData}/>))
+    let xToMove = player % 2  === 0 
 
-        // }
+    function onMove(newMove){
+        setHistory([...history.slice(0, player+1), newMove])
+        setPlayer(player + 1)
+        if (checkWinner(newMove)) {
+            return
+        }
     }
-        ,[player]
+    function handleTravelHistory(index){
+        setPlayer(index)
+    }
+
+    const travelHistory = history.map((value, index) => {
+        return (
+            <li key={index}>
+            {index === 0 ? 
+                <button onClick={() => handleTravelHistory(index)}>
+                Go to game start
+                </button>
+            :
+                <button onClick={() => handleTravelHistory(index)}>
+                Go to move #{index}
+                </button>
+            }
+            </li>
+        )
+      }
     )
-
 
     return (
         <div style={{display: "flex", flexDirection: "row"}}>
             <div style={{marginRight: "20px"}}>
-                <div> {winner? "Winner" : "Next Player:"} {pieces[historySlice%2]}</div> 
-                <Board {...boardData}/>
+                <div> {
+                    checkWinner(currentMove) ?
+                    `Winner ${!xToMove ? 'X': 'O'}`
+                    :
+                    `Next to play: ${xToMove? "X": "O"}`
+                    }</div> 
+                <Board xToMove={xToMove} move={currentMove} onMove={onMove}/>
             </div>
-            <div style={{display: "flex", flexDirection: "column"}}>
+            <ol>
+                {travelHistory}
+            </ol>
+            {/* <div style={{display: "flex", flexDirection: "column"}}>
                 {history}
-            </div>
+            </div> */}
         </div>
 
     )
@@ -234,3 +139,44 @@ function Tictactoe() {
 
 
 export default Tictactoe
+
+
+
+function checkWinner(move) {
+    let match = false
+    // check rows for matches
+    for (let i=0; i < 7; i+=3){
+        if (move[i] !== move[i+1] || !move[i+1]){
+            continue
+        }
+        if (move[i+1] !== move[i+2]){
+            continue
+        }
+        console.log('rows')
+        match = true
+    }
+    // check columsn for matches
+    for (let i=0; i < 3; i++){
+        if (move[i] !== move[i+3] || !move[i+3]){
+            continue
+        }
+        if (move[i+3] !== move[i+6]){
+            continue
+        }
+        console.log('columns')
+        match = true
+    }
+
+    // check for diagonals 
+    if (move[4]){
+        if (move[0] === move[4] && move[4] === move[8]){
+            console.log('diagonal1')
+            match = true
+        } else if (move[2] === move[4] && move[4] === move[6]) {
+            console.log('diagonal2')
+            match = true
+        }
+    }
+
+    return match
+}
