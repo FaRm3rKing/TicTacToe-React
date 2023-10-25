@@ -2,7 +2,7 @@ import { useState } from "react";
 
 function Square({onSquareClick, children}){
     return (
-    <div className="flex justify-center items-center w-20 h-20 border border-black"
+    <div className="flex justify-center items-center w-20 h-20 hover:bg-gray-300"
     onClick={onSquareClick}
     >
     {children}
@@ -29,7 +29,7 @@ function Board({move, xToMove, onMove}){
         onMove(newMove)
     }
     return (
-        <div className="grid grid-rows-3 grid-cols-3">
+        <div className="grid grid-rows-3 grid-cols-3 divide-x divide-y divide-black">
             <Square onSquareClick={() => {handleSquareClick(0)}}>{move[0]}</Square>
             <Square onSquareClick={() => {handleSquareClick(1)}}>{move[1]}</Square>
             <Square onSquareClick={() => {handleSquareClick(2)}}>{move[2]}</Square>
@@ -39,7 +39,8 @@ function Board({move, xToMove, onMove}){
             <Square onSquareClick={() => {handleSquareClick(6)}}>{move[6]}</Square>
             <Square onSquareClick={() => {handleSquareClick(7)}}>{move[7]}</Square>
             <Square onSquareClick={() => {handleSquareClick(8)}}>{move[8]}</Square>
-         </div>
+        </div>
+
     )
 
 }
@@ -53,6 +54,7 @@ function Tictactoe() {
     let currentMove = history[player]
 
     let xToMove = player % 2  === 0 
+    let winnerFound = checkWinner(currentMove)
 
     function onMove(newMove){
         setHistory([...history.slice(0, player+1), newMove])
@@ -83,30 +85,33 @@ function Tictactoe() {
     )
 
     return (
-        <>
-        <h1 className="text-2xl">TicTacToe</h1>
+        <div className='flex flex-col justify-center items-center w-screen h-screen'>
+        <h1 className="text-4xl animate-bounce">TicTacToe</h1>
         <div className="flex flex-col">
             <div className="flex flex-row">
                 <div className="h-60 w-60 border border-black">
                     <Board xToMove={xToMove} move={currentMove} onMove={onMove}/>
                 </div>
-                <div className="flex justify-center w-44 h-60 border border-black pt-2">
+                <div className="flex justify-center w-44 h-60 border border-black pt-2 overflow-y-auto pl-5">
                     <ol className="list-decimal">
                         {travelHistory}
                     </ol>
                 </div>
             </div>
 
-            <div className="col-start-1 col-end-7 flex justify-center items-center border border-black"> 
-                {
-                checkWinner(currentMove) ?
-                `Winner ${!xToMove ? 'X': 'O'}`
-                :
-                `Next to play: ${xToMove? "X": "O"}`
-                }
+            <div className="col-start-1 col-end-7 flex justify-center items-center border border-black text-2xl "> 
+                <span className="animate-pulse">
+                    {
+                    winnerFound ?
+                    `Winner ${!xToMove ? 'X': 'O'}`
+                    :
+                    `Next to play: ${xToMove? "X": "O"}`
+                    }
+
+                </span>
             </div> 
         </div>
-        </>
+        </div>
 
     )
 
