@@ -1,5 +1,15 @@
-import { useEffect, useState, useCallback } from "react";
+import { useState } from "react";
 
+function Square({onSquareClick, children}){
+    return (
+    <div className="flex justify-center items-center w-20 h-20 border border-black"
+    onClick={onSquareClick}
+    >
+    {children}
+    </div>
+    )
+
+}
 function Board({move, xToMove, onMove}){
     function handleSquareClick(i){
         console.log(move)
@@ -19,59 +29,17 @@ function Board({move, xToMove, onMove}){
         onMove(newMove)
     }
     return (
-    <div style={{display: "flex", flexDirection: "column", width:"90px", height:"90px"}}>
-        <div style={{display: "flex", flexDirection: "row", justifyContent:"center", alignItems:"center"}}>
-            <div style={{height: "30px", width: "30px", textAlign: "center", lineHeight: "30px", border:"1px solid black"}}
-            onClick={() => handleSquareClick(0)}
-            >
-                {move[0]}
-            </div>
-            <div style={{height: "30px", width: "30px", textAlign: "center", lineHeight: "30px", border:"1px solid black"}}
-            onClick={() => handleSquareClick(1)}
-            >
-                {move[1]}
-            </div>
-            <div style={{height: "30px", width: "30px", textAlign: "center", lineHeight: "30px", border:"1px solid black"}}
-            onClick={() => handleSquareClick(2)}
-            >
-                {move[2]}
-            </div>
-        </div>
-        <div style={{display: "flex", flexDirection: "row"}}>
-            <div style={{height: "30px", width: "30px", textAlign: "center", lineHeight: "30px", border:"1px solid black"}}
-            onClick={() => handleSquareClick(3)}
-            >
-                {move[3]}
-            </div>
-            <div style={{height: "30px", width: "30px", textAlign: "center", lineHeight: "30px", border:"1px solid black"}}
-            onClick={() => handleSquareClick(4)}
-            >
-                {move[4]}
-            </div>
-            <div style={{height: "30px", width: "30px", textAlign: "center", lineHeight: "30px", border:"1px solid black"}}
-            onClick={() => handleSquareClick(5)}
-            >
-                {move[5]}
-            </div>
-        </div>
-        <div style={{display: "flex", flexDirection: "row"}}>
-            <div style={{height: "30px", width: "30px", textAlign: "center", lineHeight: "30px", border:"1px solid black"}}
-            onClick={() => handleSquareClick(6)}
-            >
-                {move[6]}
-            </div>
-            <div style={{height: "30px", width: "30px",  textAlign: "center", lineHeight: "30px", border:"1px solid black"}}
-            onClick={() => handleSquareClick(7)}
-            >
-                {move[7]}
-            </div>
-            <div style={{height: "30px", width: "30px", textAlign: "center", lineHeight: "30px", border:"1px solid black"}}
-            onClick={() => handleSquareClick(8)}
-            >
-                {move[8]}
-            </div>
-        </div>
-    </div>
+        <div className="grid grid-rows-3 grid-cols-3">
+            <Square onSquareClick={() => {handleSquareClick(0)}}>{move[0]}</Square>
+            <Square onSquareClick={() => {handleSquareClick(1)}}>{move[1]}</Square>
+            <Square onSquareClick={() => {handleSquareClick(2)}}>{move[2]}</Square>
+            <Square onSquareClick={() => {handleSquareClick(3)}}>{move[3]}</Square>
+            <Square onSquareClick={() => {handleSquareClick(4)}}>{move[4]}</Square>
+            <Square onSquareClick={() => {handleSquareClick(5)}}>{move[5]}</Square>
+            <Square onSquareClick={() => {handleSquareClick(6)}}>{move[6]}</Square>
+            <Square onSquareClick={() => {handleSquareClick(7)}}>{move[7]}</Square>
+            <Square onSquareClick={() => {handleSquareClick(8)}}>{move[8]}</Square>
+         </div>
     )
 
 }
@@ -115,26 +83,30 @@ function Tictactoe() {
     )
 
     return (
-        <div style={{display: "flex", flexDirection: "row"}}>
-            <div style={{marginRight: "20px"}}>
-                <div> {
-                    checkWinner(currentMove) ?
-                    `Winner ${!xToMove ? 'X': 'O'}`
-                    :
-                    `Next to play: ${xToMove? "X": "O"}`
-                    }
-                </div> 
-
-                <div>
+        <>
+        <h1 className="text-2xl">TicTacToe</h1>
+        <div className="flex flex-col">
+            <div className="flex flex-row">
+                <div className="h-60 w-60 border border-black">
                     <Board xToMove={xToMove} move={currentMove} onMove={onMove}/>
                 </div>
+                <div className="flex justify-center w-44 h-60 border border-black pt-2">
+                    <ol className="list-decimal">
+                        {travelHistory}
+                    </ol>
+                </div>
             </div>
-            <div>
-                <ol>
-                    {travelHistory}
-                </ol>
-            </div>
+
+            <div className="col-start-1 col-end-7 flex justify-center items-center border border-black"> 
+                {
+                checkWinner(currentMove) ?
+                `Winner ${!xToMove ? 'X': 'O'}`
+                :
+                `Next to play: ${xToMove? "X": "O"}`
+                }
+            </div> 
         </div>
+        </>
 
     )
 
